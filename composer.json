@@ -7,7 +7,7 @@
   "repositories": [
     {
       "type": "path",
-      "url": "../lib-em-php-proto"
+      "url": "https://github.com/oat-sa/lib-em-php-proto"
     }
   ],
   "require": {
