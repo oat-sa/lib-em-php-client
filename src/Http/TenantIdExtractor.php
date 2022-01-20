@@ -20,12 +20,28 @@
 
 declare(strict_types=1);
 
-namespace OAT\Library\EnvironmentManagementClient\Exception;
+namespace OAT\Library\EnvironmentManagementClient\Http;
 
-final class TenantIdNotFoundException extends EnvironmentManagementClientException
+use OAT\Library\EnvironmentManagementClient\Exception\TenantIdNotFoundException;
+use Psr\Http\Message\ServerRequestInterface;
+
+final class TenantIdExtractor implements TenantIdExtractorInterface
 {
-    public static function notInToken(): self
+    private JWTTokenExtractorInterface $tokenExtractor;
+
+    public function __construct(JWTTokenExtractorInterface $tokenExtractor = null)
     {
-        return new self('Tenant Id not found in JWT token.');
+        $this->tokenExtractor = $tokenExtractor ?? new BearerJWTTokenExtractor();
+    }
+
+    public function extract(ServerRequestInterface $request): string
+    {
+        $token = $this->tokenExtractor->extract($request);
+
+        if ($token->claims()->has('tenant_id')) {
+            return (string)$token->claims()->get('tenant_id');
+        }
+
+        throw TenantIdNotFoundException::notInToken();
     }
 }

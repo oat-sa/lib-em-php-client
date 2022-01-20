@@ -20,12 +20,12 @@
 
 declare(strict_types=1);
 
-namespace OAT\Library\EnvironmentManagementClient\Exception;
+namespace OAT\Library\EnvironmentManagementClient\Http;
 
-final class TenantIdNotFoundException extends EnvironmentManagementClientException
+use Lcobucci\JWT\UnencryptedToken;
+use Psr\Http\Message\ServerRequestInterface;
+
+interface JWTTokenExtractorInterface
 {
-    public static function notInToken(): self
-    {
-        return new self('Tenant Id not found in JWT token.');
-    }
+    public function extract(ServerRequestInterface $request): UnencryptedToken;
 }

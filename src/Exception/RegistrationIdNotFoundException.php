@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Exception;
 
-final class TenantIdNotFoundException extends EnvironmentManagementClientException
+final class RegistrationIdNotFoundException extends EnvironmentManagementClientException
 {
     public static function notInToken(): self
     {
-        return new self('Tenant Id not found in JWT token.');
+        return new self('LTI Registration Id not found in JWT token.');
     }
 }

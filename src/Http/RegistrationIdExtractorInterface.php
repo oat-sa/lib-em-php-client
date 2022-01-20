@@ -22,30 +22,13 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
-use OAT\Library\EnvironmentManagementClient\Exception\TenantIdNotFoundException;
-use Psr\Http\Message\MessageInterface;
+use OAT\Library\EnvironmentManagementClient\Exception\RegistrationIdNotFoundException;
+use Psr\Http\Message\ServerRequestInterface;
 
-final class TenantIdHeaderExtractor implements TenantIdExtractorInterface
+interface RegistrationIdExtractorInterface
 {
-    private const DEFAULT_HEADER_NAME = 'X-Oat-Tenant-Id';
-
-    private string $headerPrefix;
-
-    public function __construct(string $headerPrefix = self::DEFAULT_HEADER_NAME)
-    {
-        $this->headerPrefix = $headerPrefix;
-    }
-
-    public function extract(MessageInterface $message): string
-    {
-        $headers = $message->getHeaders();
-
-        foreach ($headers as $headerName => $headerValues) {
-            if (strtolower($headerName) === strtolower($this->headerPrefix)) {
-                return array_pop($headerValues);
-            }
-        }
-
-        throw TenantIdNotFoundException::notInHeader();
-    }
+    /**
+     * @throws RegistrationIdNotFoundException
+     */
+    public function extract(ServerRequestInterface $request): string;
 }

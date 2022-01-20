@@ -68,6 +68,9 @@ final class LtiRegistrationCollection implements IteratorAggregate, Countable
         return $this->registrations[$registrationId];
     }
 
+    /**
+     * @return ArrayIterator
+     */
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->registrations);
