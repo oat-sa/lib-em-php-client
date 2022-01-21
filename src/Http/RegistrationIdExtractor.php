@@ -20,32 +20,28 @@
 
 declare(strict_types=1);
 
-namespace OAT\Library\EnvironmentManagementClient\Exception;
+namespace OAT\Library\EnvironmentManagementClient\Http;
 
-use Throwable;
-use const Grpc\STATUS_UNKNOWN;
+use OAT\Library\EnvironmentManagementClient\Exception\RegistrationIdNotFoundException;
+use Psr\Http\Message\ServerRequestInterface;
 
-final class GrpcCallFailedException extends EnvironmentManagementClientException
+final class RegistrationIdExtractor implements RegistrationIdExtractorInterface
 {
-    public static function serverNotReady(): self
+    private JWTTokenExtractorInterface $tokenExtractor;
+
+    public function __construct(JWTTokenExtractorInterface $tokenExtractor = null)
     {
-        return new self('gRPC server is not in ready state');
+        $this->tokenExtractor = $tokenExtractor ?? new BearerJWTTokenExtractor();
     }
 
-    public static function duringCall(string $requestName, Throwable $previous): self
+    public function extract(ServerRequestInterface $request): string
     {
-        return new self(
-            sprintf('gRPC call for %s failed.', $requestName),
-            STATUS_UNKNOWN,
-            $previous
-        );
-    }
+        $token = $this->tokenExtractor->extract($request);
 
-    public static function afterCallWithErrorStatus(object $grpcStatus): self
-    {
-        return new self(
-            sprintf('gRPC call returned with error: %s', $grpcStatus->details),
-            $grpcStatus->code
-        );
+        if ($token->claims()->has('registration_id')) {
+            return (string)$token->claims()->get('registration_id');
+        }
+
+        throw RegistrationIdNotFoundException::notInToken();
     }
 }

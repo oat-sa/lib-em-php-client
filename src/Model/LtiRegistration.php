@@ -37,6 +37,7 @@ final class LtiRegistration
     private ?LtiKeyChain $toolKeyChain;
     private ?LtiPlatform $ltiPlatform;
     private ?LtiTool $ltiTool;
+    private ?string $tenantId;
 
     public function __construct(
         string $id,
@@ -49,7 +50,8 @@ final class LtiRegistration
         ?LtiKeyChain $platformKeyChain,
         ?LtiKeyChain $toolKeyChain,
         ?LtiPlatform $ltiPlatform,
-        ?LtiTool $ltiTool
+        ?LtiTool $ltiTool,
+        ?string $tenantId
     ) {
         $this->id = $id;
         $this->clientId = $clientId;
@@ -62,22 +64,32 @@ final class LtiRegistration
         $this->toolKeyChain = $toolKeyChain;
         $this->ltiPlatform = $ltiPlatform;
         $this->ltiTool = $ltiTool;
+        $this->tenantId = $tenantId;
     }
 
     public static function fromProtobuf(ProtoLtiRegistration $protoRegistration): self
     {
         return new self(
-           $protoRegistration->getId(),
-           $protoRegistration->getClientId(),
-           $protoRegistration->getPlatformId(),
-           $protoRegistration->getToolId(),
-           iterator_to_array($protoRegistration->getDeploymentIds()),
-           $protoRegistration->getPlatformJwksUrl(),
-           $protoRegistration->getToolJwksUrl(),
-           LtiKeyChain::fromProtobuf($protoRegistration->getPlatformKeyChain()),
-           LtiKeyChain::fromProtobuf($protoRegistration->getToolKeyChain()),
-           $protoRegistration->hasPlatform() ? LtiPlatform::fromProtobuf($protoRegistration->getPlatform()) : null,
-           $protoRegistration->hasTool() ? LtiTool::fromProtobuf($protoRegistration->getTool()) : null,
+            $protoRegistration->getId(),
+            $protoRegistration->getClientId(),
+            $protoRegistration->getPlatformId(),
+            $protoRegistration->getToolId(),
+            iterator_to_array($protoRegistration->getDeploymentIds()),
+            $protoRegistration->getPlatformJwksUrl(),
+            $protoRegistration->getToolJwksUrl(),
+            $protoRegistration->hasPlatformKeyChain()
+                ? LtiKeyChain::fromProtobuf($protoRegistration->getPlatformKeyChain())
+                : null,
+            $protoRegistration->hasToolKeyChain()
+                ? LtiKeyChain::fromProtobuf($protoRegistration->getToolKeyChain())
+                : null,
+            $protoRegistration->hasPlatform()
+                ? LtiPlatform::fromProtobuf($protoRegistration->getPlatform())
+                : null,
+            $protoRegistration->hasTool()
+                ? LtiTool::fromProtobuf($protoRegistration->getTool())
+                : null,
+            $protoRegistration->getTenantId()
         );
     }
 
@@ -134,5 +146,10 @@ final class LtiRegistration
     public function getLtiTool(): ?LtiTool
     {
         return $this->ltiTool;
+    }
+
+    public function getTenantId(): ?string
+    {
+        return $this->tenantId;
     }
 }

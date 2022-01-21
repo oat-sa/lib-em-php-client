@@ -23,12 +23,12 @@ declare(strict_types=1);
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
 use OAT\Library\EnvironmentManagementClient\Exception\TenantIdNotFoundException;
-use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 interface TenantIdExtractorInterface
 {
     /**
      * @throws TenantIdNotFoundException
      */
-    public function extract(MessageInterface $message): string;
+    public function extract(ServerRequestInterface $request): string;
 }
