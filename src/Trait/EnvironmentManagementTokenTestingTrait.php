@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OAT\Library\EnvironmentManagementClient\Tests\Traits;
+namespace OAT\Library\EnvironmentManagementClient\Trait;
 
 use Carbon\Carbon;
 use DateTimeImmutable;
@@ -42,7 +42,7 @@ trait EnvironmentManagementTokenTestingTrait
         }
 
         if ($expiryDateTime === null) {
-            $expiryDateTime = Carbon::createFromImmutable($now)->addHour()->toImmutable();
+            $expiryDateTime = Carbon::createFromImmutable($nowDateTime)->addHour()->toImmutable();
         }
 
         return $configuration->builder()
