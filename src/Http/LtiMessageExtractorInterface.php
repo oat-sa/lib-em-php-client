@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
+use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
 use OAT\Library\EnvironmentManagementClient\Exception\RegistrationIdNotFoundException;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -30,6 +31,7 @@ interface LtiMessageExtractorInterface
 {
     /**
      * @throws RegistrationIdNotFoundException
+     * @throws TokenUnauthorizedException
      */
     public function extract(ServerRequestInterface $request): LtiMessagePayloadInterface;
 }

@@ -24,6 +24,7 @@ namespace OAT\Library\EnvironmentManagementClient\Tests\Unit\Http;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
 use OAT\Library\EnvironmentManagementClient\Exception\EnvironmentManagementClientException;
+use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
 use OAT\Library\EnvironmentManagementClient\Http\BearerJWTTokenExtractor;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +39,7 @@ final class BearerJWTTokenExtractorTest extends TestCase
 
     public function testItThrowsExceptionWhenAuthorizationHeaderMissing(): void
     {
-        $this->expectException(EnvironmentManagementClientException::class);
+        $this->expectException(TokenUnauthorizedException::class);
         $this->expectExceptionMessage('Missing Authorization header');
 
         $request = (new Psr17Factory())->createServerRequest('GET', 'http://example.test');

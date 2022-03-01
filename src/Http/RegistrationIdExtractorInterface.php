@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
+use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
 use OAT\Library\EnvironmentManagementClient\Exception\RegistrationIdNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -29,6 +30,7 @@ interface RegistrationIdExtractorInterface
 {
     /**
      * @throws RegistrationIdNotFoundException
+     * @throws TokenUnauthorizedException
      */
     public function extract(ServerRequestInterface $request): string;
 }

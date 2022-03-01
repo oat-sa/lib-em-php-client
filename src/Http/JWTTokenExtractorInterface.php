@@ -22,10 +22,14 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
-use Lcobucci\JWT\UnencryptedToken;
+use Lcobucci\JWT\Token;
+use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface JWTTokenExtractorInterface
 {
-    public function extract(ServerRequestInterface $request): UnencryptedToken;
+    /**
+     * @throws TokenUnauthorizedException
+     */
+    public function extract(ServerRequestInterface $request): Token;
 }

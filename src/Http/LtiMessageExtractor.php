@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
+use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
 use OAT\Library\EnvironmentManagementClient\Exception\LtiMessageExtractFailedException;
 use OAT\Library\Lti1p3Core\Security\Jwt\Token;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,6 +38,9 @@ final class LtiMessageExtractor implements LtiMessageExtractorInterface
         $this->tokenExtractor = $tokenExtractor ?? new BearerJWTTokenExtractor();
     }
 
+    /**
+     * @throws TokenUnauthorizedException
+     */
     public function extract(ServerRequestInterface $request): LtiMessagePayloadInterface
     {
         if (!empty($request->hasHeader("Authorization"))) {

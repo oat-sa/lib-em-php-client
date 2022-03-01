@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
+use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
 use OAT\Library\EnvironmentManagementClient\Exception\TenantIdNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -34,6 +35,9 @@ final class TenantIdExtractor implements TenantIdExtractorInterface
         $this->tokenExtractor = $tokenExtractor ?? new BearerJWTTokenExtractor();
     }
 
+    /**
+     * @throws TokenUnauthorizedException
+     */
     public function extract(ServerRequestInterface $request): string
     {
         $token = $this->tokenExtractor->extract($request);
