@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Grpc;
 
+use Exception;
+use Grpc\BaseStub;
 use Grpc\UnaryCall;
 use OAT\Library\EnvironmentManagementClient\Exception\GrpcCallFailedException;
 use Throwable;
@@ -43,5 +45,15 @@ trait GrpcCallTrait
         }
 
         return $grpcResponse;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function checkClientAvailability(BaseStub $client): void
+    {
+        if (!$client->waitForReady(10 * 1000000)) { // 10 seconds
+            throw GrpcCallFailedException::serverNotReady();
+        }
     }
 }

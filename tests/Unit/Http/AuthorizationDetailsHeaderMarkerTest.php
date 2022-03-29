@@ -33,9 +33,22 @@ final class AuthorizationDetailsHeaderMarkerTest extends TestCase
         $message = (new Psr17Factory())->createResponse();
 
         $marker = new AuthorizationDetailsHeaderMarker();
-        $message = $marker->withAuthDetails($message);
+        $message = $marker->withAuthDetails($message, "client1", "refreshToken1");
 
         $this->assertTrue($message->hasHeader('X-OAT-WITH-AUTH-DETAILS'));
-        $this->assertSame('1', $message->getHeader('X-OAT-WITH-AUTH-DETAILS')[0]);
+
+        $withAuthDetails = $message->getHeader('X-OAT-WITH-AUTH-DETAILS')[0];
+
+        $this->assertNotNull(
+            $withAuthDetails,
+            "withAuthDetails is null"
+        );
+
+        $res_array = (array)json_decode($withAuthDetails);
+
+        $this->assertArrayHasKey('clientId', $res_array);
+        $this->assertEquals('client1', $res_array['clientId']);
+        $this->assertArrayHasKey('refreshTokenId', $res_array);
+        $this->assertEquals('refreshToken1', $res_array['refreshTokenId']);
     }
 }
