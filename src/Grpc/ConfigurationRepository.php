@@ -28,16 +28,20 @@ use Oat\Envmgmt\Sidecar\ListConfigsRequest;
 use OAT\Library\EnvironmentManagementClient\Model\Configuration;
 use OAT\Library\EnvironmentManagementClient\Model\ConfigurationCollection;
 use OAT\Library\EnvironmentManagementClient\Repository\ConfigurationRepositoryInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final class ConfigurationRepository implements ConfigurationRepositoryInterface
 {
     use GrpcCallTrait;
 
     private ConfigServiceClient $grpcClient;
+    private ?LoggerInterface $logger;
 
-    public function __construct(ConfigServiceClient $grpcClient)
+    public function __construct(ConfigServiceClient $grpcClient, ?LoggerInterface $logger = null)
     {
         $this->grpcClient = $grpcClient;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function find(string $tenantId, string $configId): Configuration
@@ -46,10 +50,20 @@ final class ConfigurationRepository implements ConfigurationRepositoryInterface
         $grpcRequest->setTenantId($tenantId);
         $grpcRequest->setConfigurationId($configId);
 
-        return Configuration::fromProtobuf($this->doUnaryCall(
-            $this->grpcClient->GetConfig($grpcRequest),
-            GetConfigRequest::class
-        ));
+        $this->checkClientAvailability($this->grpcClient);
+
+        $this->logger->debug('Fetching Configuration', [
+            'tenantId' => $tenantId,
+            'configId' => $configId,
+            'grpc_endpoint' => $this->grpcClient->getTarget(),
+        ]);
+
+        return Configuration::fromProtobuf(
+            $this->doUnaryCall(
+                $this->grpcClient->GetConfig($grpcRequest, [], ['timeout' => 10 * 1000000]),
+                GetConfigRequest::class
+            )
+        );
     }
 
     public function findAll(string $tenantId): ConfigurationCollection
@@ -57,9 +71,18 @@ final class ConfigurationRepository implements ConfigurationRepositoryInterface
         $grpcRequest = new ListConfigsRequest();
         $grpcRequest->setTenantId($tenantId);
 
-        return ConfigurationCollection::fromProtobuf($this->doUnaryCall(
-            $this->grpcClient->ListConfigs($grpcRequest),
-            ListConfigsRequest::class
-        ));
+        $this->checkClientAvailability($this->grpcClient);
+
+        $this->logger->debug('Fetching all Configurations', [
+            'tenantId' => $tenantId,
+            'grpc_endpoint' => $this->grpcClient->getTarget(),
+        ]);
+
+        return ConfigurationCollection::fromProtobuf(
+            $this->doUnaryCall(
+                $this->grpcClient->ListConfigs($grpcRequest, [], ['timeout' => 10 * 1000000]),
+                ListConfigsRequest::class
+            )
+        );
     }
 }

@@ -28,16 +28,20 @@ use Oat\Envmgmt\Sidecar\ListFeatureFlagsRequest;
 use OAT\Library\EnvironmentManagementClient\Model\FeatureFlag;
 use OAT\Library\EnvironmentManagementClient\Model\FeatureFlagCollection;
 use OAT\Library\EnvironmentManagementClient\Repository\FeatureFlagRepositoryInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final class FeatureFlagRepository implements FeatureFlagRepositoryInterface
 {
     use GrpcCallTrait;
 
     private FeatureFlagServiceClient $grpcClient;
+    private ?LoggerInterface $logger;
 
-    public function __construct(FeatureFlagServiceClient $grpcClient)
+    public function __construct(FeatureFlagServiceClient $grpcClient, ?LoggerInterface $logger = null)
     {
         $this->grpcClient = $grpcClient;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function find(string $tenantId, string $featureFlagId): FeatureFlag
@@ -46,10 +50,20 @@ final class FeatureFlagRepository implements FeatureFlagRepositoryInterface
         $grpcRequest->setTenantId($tenantId);
         $grpcRequest->setFeatureFlagId($featureFlagId);
 
-        return FeatureFlag::fromProtobuf($this->doUnaryCall(
-            $this->grpcClient->GetFeatureFlag($grpcRequest),
-            GetFeatureFlagRequest::class
-        ));
+        $this->checkClientAvailability($this->grpcClient);
+
+        $this->logger->debug('Fetching Feature Flag', [
+            'tenantId' => $tenantId,
+            'featureFlagId' => $featureFlagId,
+            'grpc_endpoint' => $this->grpcClient->getTarget(),
+        ]);
+
+        return FeatureFlag::fromProtobuf(
+            $this->doUnaryCall(
+                $this->grpcClient->GetFeatureFlag($grpcRequest, [], ['timeout' => 10 * 1000000]),
+                GetFeatureFlagRequest::class
+            )
+        );
     }
 
     public function findAll(string $tenantId): FeatureFlagCollection
@@ -57,9 +71,18 @@ final class FeatureFlagRepository implements FeatureFlagRepositoryInterface
         $grpcRequest = new ListFeatureFlagsRequest();
         $grpcRequest->setTenantId($tenantId);
 
-        return FeatureFlagCollection::fromProtobuf($this->doUnaryCall(
-            $this->grpcClient->ListFeatureFlags($grpcRequest),
-            ListFeatureFlagsRequest::class
-        ));
+        $this->checkClientAvailability($this->grpcClient);
+
+        $this->logger->debug('Fetching all Feature Flags', [
+            'tenantId' => $tenantId,
+            'grpc_endpoint' => $this->grpcClient->getTarget(),
+        ]);
+
+        return FeatureFlagCollection::fromProtobuf(
+            $this->doUnaryCall(
+                $this->grpcClient->ListFeatureFlags($grpcRequest, [], ['timeout' => 10 * 1000000]),
+                ListFeatureFlagsRequest::class
+            )
+        );
     }
 }
