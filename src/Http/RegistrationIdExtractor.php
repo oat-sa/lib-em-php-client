@@ -23,14 +23,29 @@ declare(strict_types=1);
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
 use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
-use OAT\Library\EnvironmentManagementClient\Exception\TenantIdNotFoundException;
+use OAT\Library\EnvironmentManagementClient\Exception\RegistrationIdNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface TenantIdExtractorInterface
+final class RegistrationIdExtractor implements RegistrationIdExtractorInterface
 {
+    private JWTTokenExtractorInterface $tokenExtractor;
+
+    public function __construct(JWTTokenExtractorInterface $tokenExtractor = null)
+    {
+        $this->tokenExtractor = $tokenExtractor ?? new BearerJWTTokenExtractor();
+    }
+
     /**
-     * @throws TenantIdNotFoundException
      * @throws TokenUnauthorizedException
      */
-    public function extract(ServerRequestInterface $request): string;
+    public function extract(ServerRequestInterface $request): string
+    {
+        $token = $this->tokenExtractor->extract($request);
+
+        if ($token->claims()->has('registration_id')) {
+            return (string)$token->claims()->get('registration_id');
+        }
+
+        throw RegistrationIdNotFoundException::notInToken();
+    }
 }

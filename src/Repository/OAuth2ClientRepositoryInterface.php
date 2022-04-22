@@ -23,8 +23,11 @@ declare(strict_types=1);
 namespace OAT\Library\EnvironmentManagementClient\Repository;
 
 use OAT\Library\EnvironmentManagementClient\Model\OAuth2Client;
+use OAT\Library\EnvironmentManagementClient\Model\OAuth2User;
 
 interface OAuth2ClientRepositoryInterface
 {
     public function find(string $clientId): OAuth2Client;
+
+    public function findUser(string $clientId, string $username): Oauth2User;
 }

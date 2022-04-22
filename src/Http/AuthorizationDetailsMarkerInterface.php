@@ -26,5 +26,5 @@ use Psr\Http\Message\ResponseInterface;
 
 interface AuthorizationDetailsMarkerInterface
 {
-    public function withAuthDetails(ResponseInterface $response): ResponseInterface;
+    public function withAuthDetails(ResponseInterface $response, string $clientId, string $refreshTokenId): ResponseInterface;
 }
