@@ -63,6 +63,7 @@ final class LtiRegistrationCollectionTest extends TestCase
             ),
             null,
             null,
+            null
         );
 
         $collection->add($reg1);

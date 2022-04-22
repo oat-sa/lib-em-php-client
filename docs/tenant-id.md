@@ -8,7 +8,7 @@
 <?php
 
 use OAT\Library\EnvironmentManagementClient\Http\TenantIdExtractorInterface;
-use OAT\Library\EnvironmentManagementClient\Http\TenantIdHeaderExtractor;
+use OAT\Library\EnvironmentManagementClient\Http\TenantIdExtractor;
 use OAT\Library\EnvironmentManagementClient\Exception\TenantIdNotFoundException;
 use OAT\Library\EnvironmentManagementClient\Model\TenantId;
 use Psr\Http\Message\MessageInterface;
@@ -42,6 +42,6 @@ class MyService {
     }
 }
 
-$myService = new MyService(new TenantIdHeaderExtractor());
+$myService = new MyService(new TenantIdExtractor());
 $myService->myMethod();
 ```

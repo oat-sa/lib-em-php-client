@@ -78,6 +78,10 @@ final class LtiRegistrationRepositoryTest extends TestCase
             }))
             ->willReturn($this->createMockCall($protoReg));
 
+        $this->mockGrpcClient->expects($this->once())
+            ->method('waitForReady')
+            ->willReturn(true);
+
         $registration = $this->repository->find('reg-1');
 
         $this->assertInstanceOf(LtiRegistration::class, $registration);
@@ -123,6 +127,10 @@ final class LtiRegistrationRepositoryTest extends TestCase
                 return true;
             }))
             ->willReturn($this->createMockCall($protoCollection));
+
+        $this->mockGrpcClient->expects($this->once())
+            ->method('waitForReady')
+            ->willReturn(true);
 
         $collection = $this->repository->findAll('client-id', 'platform-iss', 'tool-iss');
 

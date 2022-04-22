@@ -64,6 +64,10 @@ final class OAuth2ClientRepositoryTest extends TestCase
             }))
             ->willReturn($this->createMockCall($protoClient));
 
+        $this->mockGrpcClient->expects($this->once())
+            ->method('waitForReady')
+            ->willReturn(true);
+
         $client = $this->repository->find('client-1');
 
         $this->assertInstanceOf(OAuth2Client::class, $client);

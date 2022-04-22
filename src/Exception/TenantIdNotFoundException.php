@@ -24,8 +24,8 @@ namespace OAT\Library\EnvironmentManagementClient\Exception;
 
 final class TenantIdNotFoundException extends EnvironmentManagementClientException
 {
-    public static function notInHeader(): self
+    public static function notInToken(): self
     {
-        return new self('Tenant Id not found in request header.');
+        return new self('Tenant Id not found in JWT token.');
     }
 }
