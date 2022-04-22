@@ -64,6 +64,10 @@ final class FeatureFlagRepositoryTest extends TestCase
             }))
             ->willReturn($this->createMockCall($protoFlag));
 
+        $this->mockGrpcClient->expects($this->once())
+            ->method('waitForReady')
+            ->willReturn(true);
+
         $flag = $this->repository->find('t1', 'flag-1');
 
         $this->assertInstanceOf(FeatureFlag::class, $flag);
@@ -88,6 +92,10 @@ final class FeatureFlagRepositoryTest extends TestCase
                 return true;
             }))
             ->willReturn($this->createMockCall($protoCollection));
+
+        $this->mockGrpcClient->expects($this->once())
+            ->method('waitForReady')
+            ->willReturn(true);
 
         $collection = $this->repository->findAll('t1');
 

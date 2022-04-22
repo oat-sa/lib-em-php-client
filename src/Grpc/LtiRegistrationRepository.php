@@ -28,16 +28,20 @@ use Oat\Envmgmt\Sidecar\LtiServiceClient;
 use OAT\Library\EnvironmentManagementClient\Model\LtiRegistration;
 use OAT\Library\EnvironmentManagementClient\Model\LtiRegistrationCollection;
 use OAT\Library\EnvironmentManagementClient\Repository\LtiRegistrationRepositoryInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final class LtiRegistrationRepository implements LtiRegistrationRepositoryInterface
 {
     use GrpcCallTrait;
 
     private LtiServiceClient $grpcClient;
+    private ?LoggerInterface $logger;
 
-    public function __construct(LtiServiceClient $grpcClient)
+    public function __construct(LtiServiceClient $grpcClient, ?LoggerInterface $logger = null)
     {
         $this->grpcClient = $grpcClient;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function find(string $registrationId): LtiRegistration
@@ -45,10 +49,19 @@ final class LtiRegistrationRepository implements LtiRegistrationRepositoryInterf
         $grpcRequest = new GetRegistrationRequest();
         $grpcRequest->setRegistrationId($registrationId);
 
-        return LtiRegistration::fromProtobuf($this->doUnaryCall(
-            $this->grpcClient->GetRegistration($grpcRequest),
-            GetRegistrationRequest::class
-        ));
+        $this->checkClientAvailability($this->grpcClient);
+
+        $this->logger->debug('Fetching Lti Registration', [
+            'registrationId' => $registrationId,
+            'grpc_endpoint' => $this->grpcClient->getTarget(),
+        ]);
+
+        return LtiRegistration::fromProtobuf(
+            $this->doUnaryCall(
+                $this->grpcClient->GetRegistration($grpcRequest),
+                GetRegistrationRequest::class
+            )
+        );
     }
 
     public function findAll(
@@ -70,9 +83,20 @@ final class LtiRegistrationRepository implements LtiRegistrationRepositoryInterf
             $grpcRequest->setToolIssuer($toolIssuer);
         }
 
-        return LtiRegistrationCollection::fromProtobuf($this->doUnaryCall(
-            $this->grpcClient->ListRegistrations($grpcRequest),
-            ListRegistrationsRequest::class
-        ));
+        $this->checkClientAvailability($this->grpcClient);
+
+        $this->logger->debug('Fetching all Lti Registrations', [
+            'clientId' => $clientId,
+            'platformIssuer' => $platformIssuer,
+            'toolIssuer' => $toolIssuer,
+            'grpc_endpoint' => $this->grpcClient->getTarget(),
+        ]);
+
+        return LtiRegistrationCollection::fromProtobuf(
+            $this->doUnaryCall(
+                $this->grpcClient->ListRegistrations($grpcRequest, [], ['timeout' => 10 * 1000000]),
+                ListRegistrationsRequest::class
+            )
+        );
     }
 }

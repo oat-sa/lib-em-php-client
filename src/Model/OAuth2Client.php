@@ -29,6 +29,7 @@ final class OAuth2Client
     private string $name;
     private string $clientId;
     private string $clientSecret;
+    private bool $isConfidential;
     private array $scopes;
     private ?string $tenantId;
     private ?string $instanceUrl;
@@ -37,6 +38,7 @@ final class OAuth2Client
         string $name,
         string $clientId,
         string $clientSecret,
+        bool $isConfidential,
         array $scopes,
         ?string $tenantId,
         ?string $instanceUrl
@@ -44,6 +46,7 @@ final class OAuth2Client
         $this->name = $name;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
+        $this->isConfidential = $isConfidential;
         $this->scopes = $scopes;
         $this->tenantId = $tenantId;
         $this->instanceUrl = $instanceUrl;
@@ -55,6 +58,7 @@ final class OAuth2Client
             $protoOauth2Client->getName(),
             $protoOauth2Client->getClientId(),
             $protoOauth2Client->getClientSecret(),
+            $protoOauth2Client->getIsConfidential(),
             iterator_to_array($protoOauth2Client->getScopes()),
             $protoOauth2Client->hasTenantId() ? $protoOauth2Client->getTenantId() : null,
             $protoOauth2Client->hasInstanceUrl() ? $protoOauth2Client->getInstanceUrl() : null
@@ -74,6 +78,11 @@ final class OAuth2Client
     public function getClientSecret(): string
     {
         return $this->clientSecret;
+    }
+
+    public function getIsConfidential(): bool
+    {
+        return $this->isConfidential;
     }
 
     public function getScopes(): array
