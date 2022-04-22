@@ -64,6 +64,10 @@ final class ConfigurationRepositoryTest extends TestCase
             }))
             ->willReturn($this->createMockCall($protoConfiguration));
 
+        $this->mockGrpcClient->expects($this->once())
+            ->method('waitForReady')
+            ->willReturn(true);
+
         $configuration = $this->repository->find('t1', 'conf-1');
 
         $this->assertInstanceOf(Configuration::class, $configuration);
@@ -88,6 +92,10 @@ final class ConfigurationRepositoryTest extends TestCase
                 return true;
             }))
             ->willReturn($this->createMockCall($protoCollection));
+
+        $this->mockGrpcClient->expects($this->once())
+            ->method('waitForReady')
+            ->willReturn(true);
 
         $collection = $this->repository->findAll('t1');
 

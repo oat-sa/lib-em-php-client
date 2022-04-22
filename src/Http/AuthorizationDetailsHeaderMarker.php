@@ -28,8 +28,9 @@ final class AuthorizationDetailsHeaderMarker implements AuthorizationDetailsMark
 {
     private const DEFAULT_HEADER_NAME = 'X-OAT-WITH-AUTH-DETAILS';
 
-    public function withAuthDetails(ResponseInterface $response): ResponseInterface
+    public function withAuthDetails(ResponseInterface $response, string $clientId, string $refreshTokenId): ResponseInterface
     {
-        return $response->withHeader(self::DEFAULT_HEADER_NAME, 1);
+        $withAuthDetails = array('clientId' => $clientId, 'refreshTokenId' => $refreshTokenId);
+        return $response->withHeader(self::DEFAULT_HEADER_NAME, json_encode($withAuthDetails));
     }
 }

@@ -22,30 +22,30 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Http;
 
+use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
 use OAT\Library\EnvironmentManagementClient\Exception\TenantIdNotFoundException;
-use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-final class TenantIdHeaderExtractor implements TenantIdExtractorInterface
+final class TenantIdExtractor implements TenantIdExtractorInterface
 {
-    private const DEFAULT_HEADER_NAME = 'X-Oat-Tenant-Id';
+    private JWTTokenExtractorInterface $tokenExtractor;
 
-    private string $headerPrefix;
-
-    public function __construct(string $headerPrefix = self::DEFAULT_HEADER_NAME)
+    public function __construct(JWTTokenExtractorInterface $tokenExtractor = null)
     {
-        $this->headerPrefix = $headerPrefix;
+        $this->tokenExtractor = $tokenExtractor ?? new BearerJWTTokenExtractor();
     }
 
-    public function extract(MessageInterface $message): string
+    /**
+     * @throws TokenUnauthorizedException
+     */
+    public function extract(ServerRequestInterface $request): string
     {
-        $headers = $message->getHeaders();
+        $token = $this->tokenExtractor->extract($request);
 
-        foreach ($headers as $headerName => $headerValues) {
-            if (strtolower($headerName) === strtolower($this->headerPrefix)) {
-                return array_pop($headerValues);
-            }
+        if ($token->claims()->has('tenant_id')) {
+            return (string)$token->claims()->get('tenant_id');
         }
 
-        throw TenantIdNotFoundException::notInHeader();
+        throw TenantIdNotFoundException::notInToken();
     }
 }
