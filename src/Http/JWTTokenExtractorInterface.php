@@ -20,32 +20,16 @@
 
 declare(strict_types=1);
 
-namespace OAT\Library\EnvironmentManagementClient\Exception;
+namespace OAT\Library\EnvironmentManagementClient\Http;
 
-use Throwable;
-use const Grpc\STATUS_UNKNOWN;
+use Lcobucci\JWT\Token;
+use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
+use Psr\Http\Message\ServerRequestInterface;
 
-final class GrpcCallFailedException extends EnvironmentManagementClientException
+interface JWTTokenExtractorInterface
 {
-    public static function serverNotReady(): self
-    {
-        return new self('gRPC server is not in ready state');
-    }
-
-    public static function duringCall(string $requestName, Throwable $previous): self
-    {
-        return new self(
-            sprintf('gRPC call for %s failed.', $requestName),
-            STATUS_UNKNOWN,
-            $previous
-        );
-    }
-
-    public static function afterCallWithErrorStatus(object $grpcStatus): self
-    {
-        return new self(
-            sprintf('gRPC call returned with error: %s', $grpcStatus->details),
-            $grpcStatus->code
-        );
-    }
+    /**
+     * @throws TokenUnauthorizedException
+     */
+    public function extract(ServerRequestInterface $request): Token;
 }

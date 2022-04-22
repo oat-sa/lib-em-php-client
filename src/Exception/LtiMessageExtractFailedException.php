@@ -22,30 +22,10 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Exception;
 
-use Throwable;
-use const Grpc\STATUS_UNKNOWN;
-
-final class GrpcCallFailedException extends EnvironmentManagementClientException
+final class LtiMessageExtractFailedException extends EnvironmentManagementClientException
 {
-    public static function serverNotReady(): self
+    public static function unableToExtractLtiMessage(): self
     {
-        return new self('gRPC server is not in ready state');
-    }
-
-    public static function duringCall(string $requestName, Throwable $previous): self
-    {
-        return new self(
-            sprintf('gRPC call for %s failed.', $requestName),
-            STATUS_UNKNOWN,
-            $previous
-        );
-    }
-
-    public static function afterCallWithErrorStatus(object $grpcStatus): self
-    {
-        return new self(
-            sprintf('gRPC call returned with error: %s', $grpcStatus->details),
-            $grpcStatus->code
-        );
+        return new self('Not able to parse Lti message from JWT token.');
     }
 }
