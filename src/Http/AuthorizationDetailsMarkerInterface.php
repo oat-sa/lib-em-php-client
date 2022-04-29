@@ -26,5 +26,15 @@ use Psr\Http\Message\ResponseInterface;
 
 interface AuthorizationDetailsMarkerInterface
 {
-    public function withAuthDetails(ResponseInterface $response, string $clientId, string $refreshTokenId): ResponseInterface;
+    public const MODE_COOKIE = 'cookie';
+    public const MODE_QUERY_PARAMETER = 'queryParameter';
+
+    public function withAuthDetails(
+        ResponseInterface $response,
+        string $clientId,
+        string $refreshTokenId,
+        string $userIdentifier = null,
+        string $userRole = null,
+        string $mode = self::MODE_COOKIE,
+    ): ResponseInterface;
 }
