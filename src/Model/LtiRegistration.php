@@ -130,6 +130,10 @@ final class LtiRegistration
 
     public function getPlatformKeyChain(): ?LtiKeyChain
     {
+        if ($this->platformKeyChain &&
+            (empty($this->platformKeyChain->getPublicKey()))) {
+            return null;
+        }
         return $this->platformKeyChain;
     }
 
