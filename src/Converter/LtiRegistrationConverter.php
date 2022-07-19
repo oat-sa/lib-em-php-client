@@ -32,11 +32,19 @@ use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactoryInterface;
 
 class LtiRegistrationConverter
 {
+    private LtiPlatformConverter $platformConverter;
+    private LtiToolConverter $toolConverter;
+    private KeyChainFactoryInterface $keyChainFactory;
+
     public function __construct(
-        private LtiPlatformConverter $platformConverter,
-        private LtiToolConverter $toolConverter,
-        private KeyChainFactoryInterface $keyChainFactory,
-    ) {}
+        LtiPlatformConverter $platformConverter,
+        LtiToolConverter $toolConverter,
+        KeyChainFactoryInterface $keyChainFactory,
+    ) {
+        $this->platformConverter = $platformConverter;
+        $this->toolConverter = $toolConverter;
+        $this->keyChainFactory = $keyChainFactory;
+    }
 
     public function convert(LtiRegistration $ltiRegistration): RegistrationInterface
     {
