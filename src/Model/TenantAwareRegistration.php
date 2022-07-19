@@ -30,6 +30,8 @@ use OAT\Library\Lti1p3Core\Tool\ToolInterface;
 
 class TenantAwareRegistration extends BaseRegistration implements TenantAwareRegistrationInterface
 {
+    private ?string $tenantId;
+
     public function __construct(
         string $identifier,
         string $clientId,
@@ -40,7 +42,7 @@ class TenantAwareRegistration extends BaseRegistration implements TenantAwareReg
         ?KeyChainInterface $toolKeyChain = null,
         ?string $platformJwksUrl = null,
         ?string $toolJwksUrl = null,
-        private ?string $tenantId = null
+        ?string $tenantId = null
     ) {
         parent::__construct(
             $identifier,
@@ -53,6 +55,8 @@ class TenantAwareRegistration extends BaseRegistration implements TenantAwareReg
             $platformJwksUrl,
             $toolJwksUrl
         );
+
+        $this->tenantId = $tenantId;
     }
     public function getTenantIdentifier(): ?string
     {
