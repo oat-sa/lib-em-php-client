@@ -24,10 +24,15 @@ namespace OAT\Library\EnvironmentManagementClient\Repository;
 
 use OAT\Library\EnvironmentManagementClient\Model\OAuth2Client;
 use OAT\Library\EnvironmentManagementClient\Model\OAuth2User;
+use OAT\Library\EnvironmentManagementClient\Model\ValidationResult;
 
 interface OAuth2ClientRepositoryInterface
 {
     public function find(string $clientId): OAuth2Client;
 
     public function findUser(string $clientId, string $username): Oauth2User;
+
+    public function validateClientSecret(string $clientId, string $clientSecret): ValidationResult;
+
+    public function validateUserPassword(string $clientId, string $username, string $password): ValidationResult;
 }
