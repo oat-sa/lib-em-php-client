@@ -35,6 +35,7 @@ interface AuthorizationDetailsMarkerInterface
         string $refreshTokenId,
         string $userIdentifier = null,
         string $userRole = null,
+        string $url = null,
         string $mode = self::MODE_COOKIE,
     ): ResponseInterface;
 }
