@@ -34,7 +34,7 @@ final class AuthorizationDetailsHeaderMarker implements AuthorizationDetailsMark
         string $refreshTokenId,
         string $userIdentifier = null,
         string $userRole = null,
-        string $url = null,
+        string $cookieDomain = null,
         string $ltiToken = null,
         string $mode = self::MODE_COOKIE,
     ): ResponseInterface {
@@ -43,7 +43,7 @@ final class AuthorizationDetailsHeaderMarker implements AuthorizationDetailsMark
             'refreshTokenId' => $refreshTokenId,
             'userIdentifier' => $userIdentifier,
             'userRole' => $userRole,
-            'url' => $url,
+            'cookieDomain' => $cookieDomain,
             'ltiToken' => $ltiToken,
             'mode' => $mode,
         ]));
