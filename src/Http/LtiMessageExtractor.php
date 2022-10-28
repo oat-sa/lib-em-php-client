@@ -46,11 +46,7 @@ final class LtiMessageExtractor implements LtiMessageExtractorInterface
         if (!empty($request->hasHeader("Authorization"))) {
             $token = $this->tokenExtractor->extract($request);
 
-            if (!$token->claims()->has('lti_claims')) {
-                throw LtiMessageExtractFailedException::missingLtiClaims();
-            }
-
-            return new LtiMessagePayload(new Token($token->claims()->get('lti_claims')));
+            return new LtiMessagePayload(new Token($token));
         }
 
         throw LtiMessageExtractFailedException::unableToExtractLtiMessage();
