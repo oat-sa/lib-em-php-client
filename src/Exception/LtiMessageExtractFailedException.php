@@ -28,4 +28,9 @@ final class LtiMessageExtractFailedException extends EnvironmentManagementClient
     {
         return new self('Not able to parse Lti message from JWT token.');
     }
+
+    public static function missingLtiClaims(): self
+    {
+        return new self('Not able to parse LTI message from JWT token: missing "lti_claims" claim');
+    }
 }
