@@ -30,7 +30,7 @@ use Oat\Envmgmt\Common\FeatureFlagCollection as ProtoFeatureFlagCollection;
 use OutOfBoundsException;
 use Traversable;
 
-final class FeatureFlagCollection implements IteratorAggregate, Countable
+class FeatureFlagCollection implements IteratorAggregate, Countable
 {
     /** @var FeatureFlag[] */
     private array $flags = [];
