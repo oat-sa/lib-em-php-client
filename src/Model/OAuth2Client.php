@@ -24,7 +24,7 @@ namespace OAT\Library\EnvironmentManagementClient\Model;
 
 use Oat\Envmgmt\Common\Oauth2Client as ProtoOauth2Client;
 
-final class OAuth2Client
+class OAuth2Client
 {
     private string $name;
     private string $clientId;
