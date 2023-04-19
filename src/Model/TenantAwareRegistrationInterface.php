@@ -15,24 +15,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2022 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
-namespace OAT\Library\EnvironmentManagementClient\Repository;
+namespace OAT\Library\EnvironmentManagementClient\Model;
 
-use OAT\Library\EnvironmentManagementClient\Model\OAuth2Client;
-use OAT\Library\EnvironmentManagementClient\Model\OAuth2User;
-use OAT\Library\EnvironmentManagementClient\Model\ValidationResult;
+use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 
-interface OAuth2ClientRepositoryInterface
+interface TenantAwareRegistrationInterface extends RegistrationInterface
 {
-    public function find(string $clientId): OAuth2Client;
+    public function getTenantIdentifier();
 
-    public function findUser(string $clientId, string $username): Oauth2User;
-
-    public function validateClientSecret(string $clientId, string $clientSecret): ValidationResult;
-
-    public function validateUserPassword(string $clientId, string $username, string $password): ValidationResult;
+    public static function fromBaseRegistration(RegistrationInterface $registration, ?string $tenantId = null): TenantAwareRegistrationInterface;
 }
