@@ -30,7 +30,7 @@ use Oat\Envmgmt\Common\LtiRegistrationCollection as ProtoLtiRegistrationCollecti
 use OutOfBoundsException;
 use Traversable;
 
-final class LtiRegistrationCollection implements IteratorAggregate, Countable
+class LtiRegistrationCollection implements IteratorAggregate, Countable
 {
     /** @var LtiRegistration[] */
     private array $registrations = [];
