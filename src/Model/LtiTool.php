@@ -24,7 +24,7 @@ namespace OAT\Library\EnvironmentManagementClient\Model;
 
 use Oat\Envmgmt\Common\LtiTool as ProtoLtiTool;
 
-final class LtiTool
+class LtiTool
 {
     private string $id;
     private string $name;
