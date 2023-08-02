@@ -25,7 +25,7 @@ namespace OAT\Library\EnvironmentManagementClient\Http;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
-use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token\Plain;
 use OAT\Library\EnvironmentManagementClient\Exception\EnvironmentManagementClientException;
 use OAT\Library\EnvironmentManagementClient\Exception\TokenUnauthorizedException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,7 +37,7 @@ final class BearerJWTTokenExtractor implements JWTTokenExtractorInterface
      * @throws TokenUnauthorizedException
      * @throws EnvironmentManagementClientException
      */
-    public function extract(ServerRequestInterface $request): Token
+    public function extract(ServerRequestInterface $request): Plain
     {
         if (false === $request->hasHeader('authorization')) {
             throw new TokenUnauthorizedException('Missing Authorization header');
