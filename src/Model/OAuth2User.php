@@ -25,7 +25,7 @@ namespace OAT\Library\EnvironmentManagementClient\Model;
 use InvalidArgumentException;
 use Oat\Envmgmt\Common\Oauth2User as ProtoOauth2User;
 
-final class OAuth2User
+class OAuth2User
 {
     private string $username;
     private string $password;
