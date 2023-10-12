@@ -22,11 +22,16 @@ declare(strict_types=1);
 
 namespace OAT\Library\EnvironmentManagementClient\Grpc;
 
+use Oat\Envmgmt\Common\Oauth2ClientSecret;
+use Oat\Envmgmt\Common\Oauth2UserPassword;
 use Oat\Envmgmt\Sidecar\GetClientRequest;
 use Oat\Envmgmt\Sidecar\GetClientUserRequest;
 use Oat\Envmgmt\Sidecar\Oauth2ClientServiceClient;
+use Oat\Envmgmt\Sidecar\ValidateClientSecretRequest;
+use Oat\Envmgmt\Sidecar\ValidateUserPasswordRequest;
 use OAT\Library\EnvironmentManagementClient\Model\OAuth2Client;
 use OAT\Library\EnvironmentManagementClient\Model\OAuth2User;
+use OAT\Library\EnvironmentManagementClient\Model\ValidationResult;
 use OAT\Library\EnvironmentManagementClient\Repository\OAuth2ClientRepositoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -84,6 +89,62 @@ final class OAuth2ClientRepository implements OAuth2ClientRepositoryInterface
             $this->doUnaryCall(
                 $this->grpcClient->GetClientUser($grpcRequest, [], ['timeout' => 10 * 1000000]),
                 GetClientUserRequest::class,
+            )
+        );
+    }
+
+    public function validateClientSecret(string $clientId, string $clientSecret): ValidationResult
+    {
+        $grpcRequest = new ValidateClientSecretRequest();
+        $oauth2ClientSecret = new Oauth2ClientSecret();
+
+        $oauth2ClientSecret
+            ->setId($clientId)
+            ->setSecret($clientSecret);
+
+        $grpcRequest
+            ->setOauth2ClientSecret($oauth2ClientSecret);
+
+        $this->checkClientAvailability($this->grpcClient);
+
+        $this->logger->debug('Validating OAuth2 Secret of Client', [
+            'clientId' => $clientId,
+            'grpc_endpoint' => $this->grpcClient->getTarget(),
+        ]);
+
+        return ValidationResult::fromProtobuf(
+            $this->doUnaryCall(
+                $this->grpcClient->ValidateClientSecret($grpcRequest, [], ['timeout' => 10 * 1000000]),
+                GetClientUserRequest::class,
+            )
+        );
+    }
+
+    public function validateUserPassword(string $clientId, string $username, string $password): ValidationResult
+    {
+        $grpcRequest = new ValidateUserPasswordRequest();
+        $Oauth2UserPassword = new Oauth2UserPassword();
+
+        $Oauth2UserPassword
+            ->setId($clientId)
+            ->setUsername($username)
+            ->setPassword($password);
+
+        $grpcRequest
+            ->setOauth2UserPassword($Oauth2UserPassword);
+
+        $this->checkClientAvailability($this->grpcClient);
+
+        $this->logger->debug('Fetching OAuth2 User password of Client', [
+            'clientId' => $clientId,
+            'username' => $username,
+            'grpc_endpoint' => $this->grpcClient->getTarget(),
+        ]);
+
+        return ValidationResult::fromProtobuf(
+            $this->doUnaryCall(
+                $this->grpcClient->ValidateUserPassword($grpcRequest, [], ['timeout' => 10 * 1000000]),
+                ValidateUserPasswordRequest::class,
             )
         );
     }
