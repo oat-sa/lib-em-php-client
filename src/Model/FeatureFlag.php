@@ -25,7 +25,7 @@ namespace OAT\Library\EnvironmentManagementClient\Model;
 use InvalidArgumentException;
 use Oat\Envmgmt\Common\FeatureFlag as ProtoFeatureFlag;
 
-final class FeatureFlag
+class FeatureFlag
 {
     private string $name;
     private string $value;
