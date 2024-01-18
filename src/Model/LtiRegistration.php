@@ -24,7 +24,7 @@ namespace OAT\Library\EnvironmentManagementClient\Model;
 
 use Oat\Envmgmt\Common\LtiRegistration as ProtoLtiRegistration;
 
-final class LtiRegistration
+class LtiRegistration
 {
     private string $id;
     private string $clientId;
