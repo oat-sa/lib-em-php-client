@@ -30,7 +30,7 @@ use Oat\Envmgmt\Common\ConfigurationCollection as ProtoConfigurationCollection;
 use OutOfBoundsException;
 use Traversable;
 
-final class ConfigurationCollection implements IteratorAggregate, Countable
+class ConfigurationCollection implements IteratorAggregate, Countable
 {
     /** @var Configuration[] */
     private array $configs = [];
