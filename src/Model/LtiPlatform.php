@@ -24,7 +24,7 @@ namespace OAT\Library\EnvironmentManagementClient\Model;
 
 use Oat\Envmgmt\Common\LtiPlatform as ProtoLtiPlatform;
 
-final class LtiPlatform
+class LtiPlatform
 {
     private string $id;
     private string $name;
