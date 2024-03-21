@@ -25,7 +25,7 @@ namespace OAT\Library\EnvironmentManagementClient\Model;
 use InvalidArgumentException;
 use Oat\Envmgmt\Common\Configuration as ProtoConfiguration;
 
-final class Configuration
+class Configuration
 {
     private string $name;
     private string $value;
