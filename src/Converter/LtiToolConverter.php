@@ -15,24 +15,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2022 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
-namespace OAT\Library\EnvironmentManagementClient\Repository;
+namespace OAT\Library\EnvironmentManagementClient\Converter;
 
-use OAT\Library\EnvironmentManagementClient\Model\OAuth2Client;
-use OAT\Library\EnvironmentManagementClient\Model\OAuth2User;
-use OAT\Library\EnvironmentManagementClient\Model\ValidationResult;
+use OAT\Library\EnvironmentManagementClient\Model\LtiTool;
+use OAT\Library\Lti1p3Core\Tool\Tool;
+use OAT\Library\Lti1p3Core\Tool\ToolInterface;
 
-interface OAuth2ClientRepositoryInterface
+class LtiToolConverter
 {
-    public function find(string $clientId): OAuth2Client;
-
-    public function findUser(string $clientId, string $username): Oauth2User;
-
-    public function validateClientSecret(string $clientId, string $clientSecret): ValidationResult;
-
-    public function validateUserPassword(string $clientId, string $username, string $password): ValidationResult;
+    public function convert(LtiTool $tool): ToolInterface
+    {
+        return new Tool(
+            $tool->getId(),
+            $tool->getName(),
+            $tool->getAudience(),
+            $tool->getOidcInitiationUrl(),
+            $tool->getLaunchUrl(),
+            $tool->getDeepLinkingUrl()
+        );
+    }
 }
