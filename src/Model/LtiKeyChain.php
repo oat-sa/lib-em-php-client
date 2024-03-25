@@ -24,7 +24,7 @@ namespace OAT\Library\EnvironmentManagementClient\Model;
 
 use Oat\Envmgmt\Common\LtiKeyChain as ProtoLtiKeyChain;
 
-final class LtiKeyChain
+class LtiKeyChain
 {
     private string $id;
     private string $keySetName;
